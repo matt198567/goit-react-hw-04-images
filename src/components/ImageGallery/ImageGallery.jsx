@@ -1,32 +1,58 @@
-import ImageGalleryItem from '../ImageGalleryItem/ImageGalleryItem';
-import LoadMoreBtn from '../LoadMoreBtn/LoadMoreBtn';
-import PropTypes from 'prop-types';
+import Button from 'components/LoadMoreBtn/LoadMoreBtn';
+import Loader from 'components/Loader/Loader';
+import { useState, useEffect } from 'react';
+import { fetchPhotos } from 'services/ImagesAPI';
 import styles from './ImageGallery.module.css';
+import ImageGalleryItem from 'components/ImageGallery/ImageGalleryItem/ImageGalleryItem';
+import { Notify } from 'notiflix';
+import PropTypes from 'prop-types';
 
-const ImageGallery = ({ hits, fetchData }) => {
-  const showButton = hits.length > 0;
+export const ImageGallery = ({ searchQuery }) => {
+  const [images, setImages] = useState(null);
+  const [page, setPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (searchQuery === '') {
+      return;
+    }
+    setIsLoading(true);
+    fetchPhotos(searchQuery, page).then(res => {
+      if (res.hits.length === 0) {
+        Notify.failure('Wrong request');
+        setIsLoading(false);
+      } else {
+        page > 1
+          ? setImages(prevImages => [...prevImages, ...res.hits])
+          : setImages(res.hits);
+        setIsLoading(false);
+      }
+    });
+  }, [page, searchQuery]);
+
+  useEffect(() => {
+    setPage(1);
+  }, [searchQuery]);
+
+  const loadMore = () => {
+    setPage(prevPage => prevPage + 1);
+  };
+
   return (
     <>
-      <ul className={styles.ImageGallery}>
-        {hits.map(({ id, webformatURL, largeImageURL, tags }) => (
-          <ImageGalleryItem
-            key={id}
-            webformatURL={webformatURL}
-            largeImageURL={largeImageURL}
-            dataImg={hits}
-            alt={tags}
-          />
-        ))}
-      </ul>
-
-      {showButton && <LoadMoreBtn onClick={fetchData} />}
+      {isLoading && <Loader />}
+      {images && (
+        <ul className={styles.ImageGallery}>
+          {images.map(item => {
+            return <ImageGalleryItem key={item.id} item={item} />;
+          })}
+        </ul>
+      )}
+      {images && <Button children={'Load more'} onClick={loadMore} />}
     </>
   );
 };
 
 ImageGallery.propTypes = {
-  hits: PropTypes.array.isRequired,
-  fetchData: PropTypes.func.isRequired,
+  searchQuery: PropTypes.string,
 };
-
-export default ImageGallery;

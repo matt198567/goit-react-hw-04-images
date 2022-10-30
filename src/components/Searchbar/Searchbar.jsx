@@ -3,18 +3,18 @@ import Notiflix from 'notiflix';
 import styles from './Searchbar.module.css';
 import PropTypes from 'prop-types';
 
-const Searchbar = ({ onSubmit }) => {
-  const [name, setValue] = useState('');
+export const Searchbar = ({ onSubmit }) => {
+  const [query, setValue] = useState('');
 
   const handleSubmit = e => {
     e.preventDefault();
-    if (name.trim() === '') {
+    if (query.trim() === '') {
       Notiflix.Notify.failure(
         'You have to enter something first to search for images!'
       );
       return;
     }
-    onSubmit(name);
+    onSubmit(query);
     reset();
   };
 
@@ -44,7 +44,7 @@ const Searchbar = ({ onSubmit }) => {
         </button>
 
         <input
-          value={name}
+          value={query}
           className={styles.SearchFormInput}
           type="text"
           onChange={handleChange}
