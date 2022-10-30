@@ -1,10 +1,10 @@
-import Button from 'components/LoadMoreBtn/LoadMoreBtn';
-import Loader from 'components/Loader/Loader';
 import { useState, useEffect } from 'react';
 import { fetchPhotos } from 'services/ImagesAPI';
+import Button from 'components/LoadMoreBtn/LoadMoreBtn';
+import Loader from 'components/Loader/Loader';
 import styles from './ImageGallery.module.css';
 import ImageGalleryItem from 'components/ImageGallery/ImageGalleryItem/ImageGalleryItem';
-import { Notify } from 'notiflix';
+import Notify from 'notiflix';
 import PropTypes from 'prop-types';
 
 export const ImageGallery = ({ searchQuery }) => {
@@ -54,5 +54,5 @@ export const ImageGallery = ({ searchQuery }) => {
 };
 
 ImageGallery.propTypes = {
-  searchQuery: PropTypes.string,
+  searchQuery: PropTypes.string.isRequired,
 };

@@ -11,9 +11,11 @@ export const Modal = ({ onCloseModal, children }) => {
   });
 
   const escClose = e => {
-    if (e.code === 'Escape') {
-      onCloseModal();
-      window.removeEventListener('keydown', escClose);
+    if (onCloseModal) {
+      if (e.code === 'Escape') {
+        onCloseModal();
+        window.removeEventListener('keydown', escClose);
+      }
     }
   };
 
@@ -32,6 +34,6 @@ export const Modal = ({ onCloseModal, children }) => {
 };
 
 Modal.protoTypes = {
-  onCloseModal: PropTypes.func,
-  children: PropTypes.object,
+  onCloseModal: PropTypes.func.isRequired,
+  children: PropTypes.object.isRequired,
 };
