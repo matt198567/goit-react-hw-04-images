@@ -5,38 +5,33 @@ import styles from './Modal.module.css';
 
 const modalRoot = document.querySelector('#modal-root');
 
-function Modal({ largeImageURL, onToggleModal }) {
+export const Modal = ({ onCloseModal, children }) => {
   useEffect(() => {
-    const handleKeyDown = e => {
-      if (e.code === 'Escape') {
-        onToggleModal();
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [onToggleModal]);
+    window.addEventListener('keydown', escClose);
+  });
 
-  const handleBackdropClick = e => {
-    if (e.currentTarget === e.target) {
-      onToggleModal();
+  const escClose = e => {
+    if (e.code === 'Escape') {
+      onCloseModal();
+      window.removeEventListener('keydown', escClose);
+    }
+  };
+
+  const closeModal = e => {
+    if (e.target.nodeName === 'DIV') {
+      onCloseModal();
     }
   };
 
   return createPortal(
-    <div className={styles.Overlay} onClick={handleBackdropClick}>
-      <div className={styles.Modal}>
-        <img src={largeImageURL} alt="" />
-      </div>
+    <div className={styles.Overlay} onClick={closeModal}>
+      <div className={styles.Modal}>{children}</div>
     </div>,
     modalRoot
   );
-}
-
-Modal.propTypes = {
-  onToggleModal: PropTypes.func,
-  largeImageURL: PropTypes.string,
 };
 
-export default Modal;
+Modal.protoTypes = {
+  onCloseModal: PropTypes.func,
+  children: PropTypes.object,
+};

@@ -1,4 +1,4 @@
-import Modal from 'components/Modal/Modal';
+import { Modal } from 'components/Modal/Modal';
 import { useState } from 'react';
 import Loader from 'components/Loader/Loader';
 import styles from './ImageGalleryItem.module.css';
